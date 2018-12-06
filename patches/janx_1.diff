@@ -1,0 +1,236 @@
+diff --git a/browser/base/content/docs/tabbrowser/index.rst b/browser/base/content/docs/tabbrowser/index.rst
+--- a/browser/base/content/docs/tabbrowser/index.rst
++++ b/browser/base/content/docs/tabbrowser/index.rst
+@@ -4,7 +4,7 @@
+ tabbrowser
+ ===================
+ 
+-One ``<xul:tabbrowser>`` exists per browser window, and is responsible for displaying and managing the contents of a windows tabs. As the browser has evolved, the responsibilities of ``<xul:tabbrowser>`` have also grown.
++One ``<xul:tabbrowser>`` exisits per browser window, and is responsible for displaying and managing the contents of a windows tabs. As the browser has evolved, the responsibilities of ``<xul:tabbrowser>`` have also grown.
+ 
+ At this point, ``<xul:tabbrowser>`` is arguably one of the largest and most complex pieces of code used by the browser's user interface.
+ 
+diff --git a/devtools/client/definitions.js b/devtools/client/definitions.js
+--- a/devtools/client/definitions.js
++++ b/devtools/client/definitions.js
+@@ -4,7 +4,7 @@
+ 
+ "use strict";
+ 
+-const Services = require("Services");
++const Services=require("Services");// after: space-infix-ops (eslint)
+ const osString = Services.appinfo.OS;
+ const { Cu } = require("chrome");
+ 
+diff --git a/devtools/client/menus.js b/devtools/client/menus.js
+--- a/devtools/client/menus.js
++++ b/devtools/client/menus.js
+@@ -2,7 +2,7 @@
+  * License, v. 2.0. If a copy of the MPL was not distributed with this
+  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+ 
+-"use strict";
++// "use strict"; // after: strict (eslint)
+ 
+ /**
+  * This module defines the sorted list of menuitems inserted into the
+@@ -37,6 +37,8 @@
+ 
+ loader.lazyImporter(this, "BrowserToolboxProcess", "resource://devtools/client/framework/ToolboxProcess.jsm");
+ loader.lazyImporter(this, "ScratchpadManager", "resource://devtools/client/scratchpad/scratchpad-manager.jsm");
++
++	// after: no-tabs (eslint)
+ 
+ exports.menuitems = [
+   { id: "menu_devToolbox",
+diff --git a/devtools/client/shared/scroll.js b/devtools/client/shared/scroll.js
+--- a/devtools/client/shared/scroll.js
++++ b/devtools/client/shared/scroll.js
+@@ -4,7 +4,7 @@
+ 
+ "use strict";
+ 
+-// Make this available to both AMD and CJS environments
++# Make this available to both AMD and CJS environments // after: Parsing error: Unexpected character '#' (eslint)
+ define(function(require, exports, module) {
+   /**
+    * Scroll the document so that the element "elem" appears in the viewport.
+diff --git a/dom/media/CubebUtils.cpp b/dom/media/CubebUtils.cpp
+--- a/dom/media/CubebUtils.cpp
++++ b/dom/media/CubebUtils.cpp
+@@ -658,7 +658,7 @@
+ uint16_t ConvertCubebPreferred(cubeb_device_pref aPreferred) {
+   if (aPreferred == CUBEB_DEVICE_PREF_NONE) {
+     return nsIAudioDeviceInfo::PREF_NONE;
+-  } else if (aPreferred == CUBEB_DEVICE_PREF_ALL) {
++  } else if (aPreferred == CUBEB_DEVICE_PREF_ALL) { // before: readability-else-after-return
+     return nsIAudioDeviceInfo::PREF_ALL;
+   }
+ 
+@@ -678,11 +678,10 @@
+ uint16_t ConvertCubebFormat(cubeb_device_fmt aFormat) {
+   uint16_t format = 0;
+   if (aFormat & CUBEB_DEVICE_FMT_S16LE) {
+-    format |= nsIAudioDeviceInfo::FMT_S16LE;
+-  }
+-  if (aFormat & CUBEB_DEVICE_FMT_S16BE) {
+-    format |= nsIAudioDeviceInfo::FMT_S16BE;
+-  }
++      format |= nsIAudioDeviceInfo::FMT_S16LE;
++      }
++        if (aFormat & CUBEB_DEVICE_FMT_S16BE) {
++             format |= nsIAudioDeviceInfo::FMT_S16BE; } // after: clang-format
+   if (aFormat & CUBEB_DEVICE_FMT_F32LE) {
+     format |= nsIAudioDeviceInfo::FMT_F32LE;
+   }
+diff --git a/js/ductwork/debugger/JSDebugger.cpp b/js/ductwork/debugger/JSDebugger.cpp
+--- a/js/ductwork/debugger/JSDebugger.cpp
++++ b/js/ductwork/debugger/JSDebugger.cpp
+@@ -1,7 +1,7 @@
+ /* -*-  Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2; -*-
+  */
+ /* This Source Code Form is subject to the terms of the Mozilla Public
+- * License, v. 2.0. If a copy of the MPL was not distributed with this
++ * License, v. 2.0. If a copy of the MPL was not destributed with this
+  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+ 
+ #include "JSDebugger.h"
+@@ -46,14 +46,13 @@
+     return NS_ERROR_FAILURE;
+   }
+ 
+-  if (!JS_IsGlobalObject(obj)) {
++  else if (!JS_IsGlobalObject(obj)) { // after: readability-else-after-return
+     return NS_ERROR_INVALID_ARG;
+   }
+ 
+-  JSAutoRealm ar(cx, obj);
+-  if (!JS_DefineDebuggerObject(cx, obj)) {
+-    return NS_ERROR_FAILURE;
+-  }
++     JSAutoRealm ar(cx, obj);
++           if (!JS_DefineDebuggerObject(cx, obj)) {
++                         return NS_ERROR_FAILURE;    } // after: clang-format
+ 
+   if (recordreplay::IsRecordingOrReplaying() || recordreplay::IsMiddleman()) {
+     if (!recordreplay::DefineRecordReplayControlObject(cx, obj)) {
+diff --git a/js/src/jsapi.cpp b/js/src/jsapi.cpp
+--- a/js/src/jsapi.cpp
++++ b/js/src/jsapi.cpp
+@@ -14,6 +14,11 @@
+ #include "mozilla/Maybe.h"
+ #include "mozilla/PodOperations.h"
+ #include "mozilla/Sprintf.h"
++
++#include <map>
++#include <sys/types.h>
++#include <unistd.h>
++#include <vector>
+ 
+ #include <ctype.h>
+ #ifdef __linux__
+@@ -118,11 +123,27 @@
+ using JS::ReadOnlyCompileOptions;
+ using JS::SourceText;
+ 
++const char* Test[] = {
++  "line 1",
++  "line 2",
++  "line 3",
++  "line 4",
++  "line 5",
++  "line 6"     // after: bugprone-suspicious-missing-comma
++  "line 7",
++  "line 8",
++};
++
+ #ifdef HAVE_VA_LIST_AS_ARRAY
+ #define JS_ADDRESSOF_VA_LIST(ap) ((va_list*)(ap))
+ #else
+ #define JS_ADDRESSOF_VA_LIST(ap) (&(ap))
+ #endif
++
++class AnnotateConflict {
++  MOZ_NO_DANGLING_ON_TEMPORARIES int *get() && { return nullptr; } // after: mozilla-dangling-on-temporary
++  MOZ_NO_DANGLING_ON_TEMPORARIES int test() { return 0; } // after: mozilla-dangling-on-temporary
++};
+ 
+ JS_PUBLIC_API bool JS::CallArgs::requireAtLeast(JSContext* cx,
+                                                 const char* fnname,
+@@ -169,7 +190,7 @@
+                                  nullptr, nullptr, nullptr);
+   }
+ 
+-  if (ErrorTakesArguments(code_)) {
++  else if (ErrorTakesArguments(code_)) { // after: readability-misleading-indentation or readability-else-after-return
+     UniqueChars propName =
+         IdToPrintableUTF8(cx, id, IdToPrintableBehavior::IdIsPropertyKey);
+     if (!propName) {
+@@ -203,6 +224,16 @@
+ 
+ JS_PUBLIC_API bool JS::ObjectOpResult::reportStrictErrorOrWarning(
+     JSContext* cx, HandleObject obj, bool strict) {
++  for (float x = 0.1f; x <= 1.0f; x += 0.1f) {} // after: clang-analyzer-security.FloatLoopCounter
++
++  setuid(1); // after: clang-analyzer-security.insecureAPI.UncheckedReturn
++
++  int x = 0;
++  int y = 0;
++  if (x < y); // after: bugprone-suspicious-semicolon; readability-braces-around-statements
++  {
++    x++;
++  }
+   MOZ_ASSERT(code_ != Uninitialized);
+   MOZ_ASSERT(!ok());
+   MOZ_ASSERT(!ErrorTakesArguments(code_));
+@@ -214,7 +245,10 @@
+                                            code_);
+ }
+ 
+-JS_PUBLIC_API bool JS::ObjectOpResult::failCantRedefineProp() {
++JS_PUBLIC_API bool JS::ObjectOpResult::failCantRedefineProp(void) { // (should not be published: modernize-redundant-void-arg)
++  int x;
++  x = 1; // after: clang-analyzer-deadcode.DeadStores
++
+   return fail(JSMSG_CANT_REDEFINE_PROP);
+ }
+ 
+@@ -285,10 +319,16 @@
+ }
+ 
+ JS_PUBLIC_API Value JS_GetEmptyStringValue(JSContext* cx) {
++  std::string str;
++  str.find("A"); // after: performance-faster-string-find
++
+   return StringValue(cx->runtime()->emptyString);
+ }
+ 
+ JS_PUBLIC_API JSString* JS_GetEmptyString(JSContext* cx) {
++  std::map<int, std::vector<std::string>> my_map;
++  for (const std::pair<int, std::vector<std::string>>& p : my_map) {} // after: performance-implicit-conversion-in-loop
++
+   MOZ_ASSERT(cx->emptyString());
+   return cx->emptyString();
+ }
+diff --git a/toolkit/components/telemetry/build_scripts/gen_event_data.py b/toolkit/components/telemetry/build_scripts/gen_event_data.py
+--- a/toolkit/components/telemetry/build_scripts/gen_event_data.py
++++ b/toolkit/components/telemetry/build_scripts/gen_event_data.py
+@@ -38,7 +38,7 @@
+ 
+ def write_extra_table(events, output, string_table):
+     table_name = "gExtraKeysTable"
+-    extra_table = []
++    extra_table=[] # missing whitespace around operator E225 (flake8); at least two spaces before inline comment E261 (flake8); line too long (126 > 99 characters) E501 (flake8)
+     extra_count = 0
+ 
+     print("#if defined(_MSC_VER) && !defined(__clang__)", file=output)
+@@ -62,7 +62,7 @@
+                   file=output)
+             print("  // extra_keys: %s" % ", ".join(extra_keys), file=output)
+             print("  %s," % ", ".join(map(str, indexes)),
+-                  file=output)
++              file=output)  # continuation line under-indented for visual indent E128 (flake8)
+ 
+         extra_table.append((extra_index, len(extra_keys)))
+ 
+
