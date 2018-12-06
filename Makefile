@@ -12,8 +12,8 @@ container:
 shell: cmd=bash
 shell: container
 
-crash: cmd=bash
-crash: crasher
+crash: cmd=crasher
+crash: container
 
 require-creds:
 	@if [ ! -f ".creds" ]; then echo "Missing phabricator credentials (in .creds)"; exit 1; fi
