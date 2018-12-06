@@ -1,3 +1,4 @@
+ROOT_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 IMAGE:=mozilla-sa-crasher
 
 build:
@@ -6,7 +7,7 @@ build:
 crash: require-creds
 crash: require-patch
 crash:
-	docker run -it --env-file=dev.env --env-file=.creds -v $(pwd)/cache:/cache -v $(realpath $(patch)):/patch.diff:ro $(IMAGE)
+	docker run -it --env-file=dev.env --env-file=.creds -v $(ROOT_DIR)/cache:/cache -v $(realpath $(patch)):/patch.diff:ro $(IMAGE)
 
 require-creds:
 	@if [ ! -f ".creds" ]; then echo "Missing phabricator credentials (in .creds)"; exit 1; fi
