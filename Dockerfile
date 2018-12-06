@@ -14,4 +14,7 @@ RUN git clone --depth=1 https://github.com/phacility/libphutil.git /usr/share/ph
 RUN git clone --depth=1 https://github.com/phacility/arcanist.git /usr/share/php7/arcanist
 ENV PATH "$PATH:/usr/share/php7/arcanist/bin"
 
-CMD arc
+# Add crash tool
+ADD crasher.sh /usr/bin/crasher
+
+CMD /usr/bin/crasher
