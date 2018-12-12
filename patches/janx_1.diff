@@ -129,7 +129,7 @@ diff --git a/js/src/jsapi.cpp b/js/src/jsapi.cpp
  
  #include <ctype.h>
  #ifdef __linux__
-@@ -118,11 +123,27 @@
+@@ -117,11 +122,27 @@
  using JS::ReadOnlyCompileOptions;
  using JS::SourceText;
  

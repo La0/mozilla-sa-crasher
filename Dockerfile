@@ -1,7 +1,7 @@
 FROM alpine
 
 # Setup dependencies
-RUN apk --update add git mercurial bash php7-cli php7-curl php7-json
+RUN apk --update add git mercurial bash php7-cli php7-curl php7-json patch
 
 # Setup mercurial robustcheckout
 RUN mkdir -p /usr/share/mercurial

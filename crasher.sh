@@ -44,7 +44,7 @@ echo {} | arc call-conduit user.whoami | python -m json.tool
 
 # Apply crash
 cd $REPO
-git apply $PATCH
+patch -p1 -i $PATCH
 
 # Create a revision
 arc diff -a -m "Test automatic static analysis crash" --skip-staging --reviewers ReviewBot --nounit --nolint
